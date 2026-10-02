@@ -60,7 +60,7 @@ export default function TripPlannerModal() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#1C1E1D]/60 backdrop-blur-sm animate-[voyara-fade-up_0.3s_ease]"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#1C1E1D]/60 backdrop-blur-sm animate-[dorin-fade-up_0.3s_ease]"
       onClick={closePlanner}
       data-testid="plan-trip-modal"
     >

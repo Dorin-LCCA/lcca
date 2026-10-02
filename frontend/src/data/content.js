@@ -1,4 +1,4 @@
-// Central static content for VOYARA TRAVEL (destinations, experiences, offers, testimonials, FAQs).
+// Central static content for DORIN TRAVEL (destinations, experiences, offers, testimonials, FAQs).
 // Blog articles come from the backend CMS.
 
 export const DESTINATIONS = [
@@ -260,7 +260,7 @@ export const TESTIMONIALS = [
     rating: 5,
     trip: "Italy City Break",
     destination: "Rome",
-    review: "VOYARA made planning our first trip to Italy incredibly easy. Everything felt personalised rather than generic, right down to the dinner reservations.",
+    review: "DORIN made planning our first trip to Italy incredibly easy. Everything felt personalised rather than generic, right down to the dinner reservations.",
   },
   {
     name: "Daniel",
@@ -305,12 +305,12 @@ export const TESTIMONIALS = [
 ];
 
 export const FAQS = [
-  { q: "Can you customise my trip?", a: "Absolutely. Every VOYARA itinerary is built around how you like to travel. Tell us your dates, budget and the kind of experience you're after, and a specialist will tailor each element, from hotels to day trips, to suit you." },
+  { q: "Can you customise my trip?", a: "Absolutely. Every DORIN itinerary is built around how you like to travel. Tell us your dates, budget and the kind of experience you're after, and a specialist will tailor each element, from hotels to day trips, to suit you." },
   { q: "How do I request a quote?", a: "Use our Plan My Trip planner or the Contact page enquiry form. Share a few details and one of our travel specialists will come back to you with personalised options, usually within 24 hours." },
   { q: "Can I change my travel dates?", a: "In most cases, yes. Flexibility depends on the specific hotels and fares in your itinerary, but your dedicated specialist will always explain your options clearly before you book and help with any changes afterwards." },
   { q: "Do you arrange flights and accommodation?", a: "We can arrange your complete trip, including accommodation, transfers, experiences and flights, or just the elements you'd like help with. It's entirely up to you." },
   { q: "How does the planning process work?", a: "It's four simple steps: tell us what you want, discover the options we curate for you, personalise the details together, then start your journey with our UK team on hand throughout." },
-  { q: "Is my booking financially protected?", a: "Yes. VOYARA trips are arranged with your financial protection in mind, and we provide clear, transparent pricing with no hidden costs before you commit to anything." },
+  { q: "Is my booking financially protected?", a: "Yes. DORIN trips are arranged with your financial protection in mind, and we provide clear, transparent pricing with no hidden costs before you commit to anything." },
 ];
 
 export const SOCIAL_GALLERY = [

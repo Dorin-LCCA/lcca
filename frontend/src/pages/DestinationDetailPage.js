@@ -36,7 +36,7 @@ export default function DestinationDetailPage() {
 
   return (
     <div data-testid="destination-detail-page">
-      <Seo title={`${d.name}, ${d.country} | VOYARA Travel`} description={`${d.short} Discover VOYARA's ${d.name} holidays ${priceLabel(d.price).toLowerCase()} per person. Personalised itineraries and handpicked stays.`} />
+      <Seo title={`${d.name}, ${d.country} | DORIN Travel`} description={`${d.short} Discover DORIN's ${d.name} holidays ${priceLabel(d.price).toLowerCase()} per person. Personalised itineraries and handpicked stays.`} />
 
       {/* Hero */}
       <section className="relative h-[70vh] min-h-[460px] flex items-end">

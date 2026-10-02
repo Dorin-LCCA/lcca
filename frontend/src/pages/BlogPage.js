@@ -31,11 +31,11 @@ export default function BlogPage() {
 
   return (
     <div data-testid="blog-page">
-      <Seo title="Travel Journal | Destination Guides & Travel Inspiration | VOYARA" description="The VOYARA Travel Journal: destination guides, travel tips, budget advice and inspiration for your next adventure. Read stories from our specialists and travellers." />
+      <Seo title="Travel Journal | Destination Guides & Travel Inspiration | DORIN" description="The DORIN Travel Journal: destination guides, travel tips, budget advice and inspiration for your next adventure. Read stories from our specialists and travellers." />
 
       <section className="relative pt-36 pb-14 bg-[#F5F2EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="overline text-[#2A4038] mb-4">The VOYARA Journal</p>
+          <p className="overline text-[#2A4038] mb-4">The DORIN Journal</p>
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-balance">Travel Journal</h1>
           <p className="mt-5 text-lg text-[#4A4E4B] font-light max-w-xl mx-auto">
             Inspiration, guides and stories for your next adventure.

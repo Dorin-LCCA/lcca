@@ -5,13 +5,17 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 import os
+import re
+import uuid
+import ipaddress
 import logging
-import secrets
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Annotated
+from html import escape
+from html.parser import HTMLParser
+from urllib.parse import urlparse
 
-import bcrypt
-import jwt
+import httpx
 from bson import ObjectId
 from fastapi import FastAPI, APIRouter, Request, Response, HTTPException, Depends
 from starlette.middleware.cors import CORSMiddleware
@@ -25,11 +29,11 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-JWT_ALGORITHM = "HS256"
-
-
-def get_jwt_secret() -> str:
-    return os.environ["JWT_SECRET"]
+# Emergent managed email proxy. CONSTANT (survives deployment) — never from env.
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY", "")
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "DORIN TRAVEL")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "")
 
 
 # ----------------------------------------------------------------------------
@@ -49,42 +53,26 @@ def now_iso() -> str:
 
 
 # ----------------------------------------------------------------------------
-# Auth utils
+# Auth (Emergent Google OAuth)
 # ----------------------------------------------------------------------------
-def hash_password(password: str) -> str:
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
+EMERGENT_SESSION_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+SESSION_TTL_DAYS = 7
 
 
-def verify_password(plain: str, hashed: str) -> bool:
-    try:
-        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
-    except Exception:
-        return False
-
-
-def create_access_token(user_id: str, email: str) -> str:
-    payload = {"sub": user_id, "email": email,
-               "exp": datetime.now(timezone.utc) + timedelta(minutes=60), "type": "access"}
-    return jwt.encode(payload, get_jwt_secret(), algorithm=JWT_ALGORITHM)
-
-
-def create_refresh_token(user_id: str) -> str:
-    payload = {"sub": user_id, "exp": datetime.now(timezone.utc) + timedelta(days=7), "type": "refresh"}
-    return jwt.encode(payload, get_jwt_secret(), algorithm=JWT_ALGORITHM)
-
-
-def set_auth_cookies(response: Response, access: str, refresh: str):
-    response.set_cookie("access_token", access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
-    response.set_cookie("refresh_token", refresh, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+def set_session_cookie(response: Response, session_token: str):
+    response.set_cookie("session_token", session_token, httponly=True, secure=True,
+                        samesite="none", max_age=SESSION_TTL_DAYS * 86400, path="/")
 
 
 def serialize_user(user: dict) -> dict:
     return {
-        "id": str(user["_id"]),
+        "id": user["user_id"],
+        "user_id": user["user_id"],
         "email": user["email"],
+        "name": user.get("name", ""),
         "first_name": user.get("first_name", ""),
         "last_name": user.get("last_name", ""),
+        "picture": user.get("picture", ""),
         "role": user.get("role", "customer"),
         "marketing_opt_in": user.get("marketing_opt_in", False),
         "preferences": user.get("preferences", {}),
@@ -95,25 +83,153 @@ def serialize_user(user: dict) -> dict:
 
 
 async def get_current_user(request: Request) -> dict:
-    token = request.cookies.get("access_token")
+    token = request.cookies.get("session_token")
     if not token:
         auth = request.headers.get("Authorization", "")
         if auth.startswith("Bearer "):
             token = auth[7:]
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    session = await db.user_sessions.find_one({"session_token": token})
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    expires_at = session["expires_at"]
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Session expired")
+    user = await db.users.find_one({"user_id": session["user_id"]}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
+
+# ----------------------------------------------------------------------------
+# Email (Emergent-managed Resend) — guardrail gate copied as-is
+# ----------------------------------------------------------------------------
+_SHORTENERS = ("bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly", "goo.gl", "rebrand.ly")
+_CRED_ASK = ("reply with your password", "reply with the code", "send your password", "cvv",
+             "send us your password", "enter your password below", "confirm your card number",
+             "your full card number", "seed phrase", "recovery phrase", "verify your card",
+             "social security number", "confirm your bank details")
+_HOSTISH = re.compile(r"\b(?:https?://)?((?:[a-z0-9-]+\.)+[a-z]{2,})", re.I)
+
+
+def _host_ok(host: str) -> bool:
+    if not host or "xn--" in host:
+        return False
     try:
-        payload = jwt.decode(token, get_jwt_secret(), algorithms=[JWT_ALGORITHM])
-        if payload.get("type") != "access":
-            raise HTTPException(status_code=401, detail="Invalid token type")
-        user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
-        if not user:
-            raise HTTPException(status_code=401, detail="User not found")
-        return user
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        ipaddress.ip_address(host)
+        return False
+    except ValueError:
+        pass
+    return not any(host == s or host.endswith("." + s) for s in _SHORTENERS)
+
+
+def _same_site(shown: str, real: str) -> bool:
+    return shown == real or real.endswith("." + shown) or shown.endswith("." + real)
+
+
+class _EmailScan(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.tags, self.urls, self.anchors = set(), [], []
+        self._href, self._text = None, []
+
+    def handle_starttag(self, tag, attrs):
+        self.tags.add(tag.lower())
+        self.urls += [v for k, v in attrs if k.lower() in ("href", "src") and v]
+        if tag.lower() == "a":
+            self._href = dict((k.lower(), v) for k, v in attrs).get("href")
+            self._text = []
+
+    def handle_data(self, data):
+        if self._href is not None:
+            self._text.append(data)
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "a" and self._href is not None:
+            self.anchors.append((self._href, "".join(self._text)))
+            self._href, self._text = None, []
+
+
+def _assert_safe_email(subject: str, html: str) -> None:
+    scan = _EmailScan(); scan.feed(html)
+    if scan.tags & {"form", "input", "textarea", "select"}:
+        raise ValueError("No forms or input fields in email (G2)")
+    body = f"{subject}\n{html}".lower()
+    for p in _CRED_ASK:
+        if p in body:
+            raise ValueError(f"Email asks the recipient for credentials: {p!r} (G2)")
+    for url in scan.urls:
+        low = url.strip().lower()
+        if low.startswith(("mailto:", "tel:", "cid:", "#")):
+            continue
+        if not low.startswith("https://"):
+            raise ValueError(f"Email links/assets must be absolute https: {url!r} (G3)")
+        host = urlparse(low).hostname or ""
+        if not _host_ok(host) or urlparse(low).username is not None:
+            raise ValueError(f"Shortened, numeric-host or credential-bearing URL: {url!r} (G3)")
+    for href, text in scan.anchors:
+        real = urlparse(href.strip().lower()).hostname or ""
+        if not real:
+            continue
+        for m in _HOSTISH.finditer(text):
+            if not _same_site(m.group(1).lower(), real):
+                raise ValueError(f"Anchor text {m.group(1)!r} != real link host {real!r} (G3)")
+
+
+async def send_email(*, to: str, subject: str, html: str) -> Optional[str]:
+    _assert_safe_email(subject, html)
+    if not EMAIL_KEY:
+        logger.warning("EMERGENT_EMAIL_KEY not set; skipping email send")
+        return None
+    payload = {"to": [to], "subject": subject, "html": html, "from_name": EMAIL_FROM_NAME}
+    try:
+        async with httpx.AsyncClient(timeout=30) as hc:
+            resp = await hc.post(f"{EMAIL_BASE_URL}/api/v1/email/send",
+                                 headers={"X-Email-Key": EMAIL_KEY}, json=payload)
+        resp.raise_for_status()
+        return resp.json().get("id")
+    except Exception as e:
+        logger.error(f"Email send error: {e}")
+        return None
+
+
+def _wrap(inner: str) -> str:
+    site = FRONTEND_URL if FRONTEND_URL.startswith("https://") else ""
+    footer_link = f'<p style="margin:18px 0 0"><a href="{escape(site)}" style="color:#2A4038">Visit DORIN TRAVEL</a></p>' if site else ""
+    return (f'<table role="presentation" width="100%" style="background:#FDFBF7;padding:28px 0">'
+            f'<tr><td align="center"><table role="presentation" width="560" '
+            f'style="background:#ffffff;border:1px solid #E2DDD5;border-radius:16px;overflow:hidden">'
+            f'<tr><td style="background:#2A4038;padding:22px 32px">'
+            f'<span style="font-family:Georgia,serif;font-size:22px;color:#FDFBF7;font-weight:600">DORIN<span style="color:#C86D51">.</span> TRAVEL</span></td></tr>'
+            f'<tr><td style="padding:32px;font-family:Arial,Helvetica,sans-serif;color:#1C1E1D;font-size:15px;line-height:1.6">'
+            f'{inner}{footer_link}'
+            f'<p style="font-size:12px;color:#888;margin-top:24px">Sent by {escape(EMAIL_FROM_NAME)}. '
+            f'We never ask for your password or payment details by email.</p>'
+            f'</td></tr></table></td></tr></table>')
+
+
+async def send_welcome_email(to: str, first_name: str):
+    inner = (f'<h1 style="font-family:Georgia,serif;font-size:24px;margin:0 0 12px">Welcome aboard, {escape(first_name)}!</h1>'
+             f'<p>Your DORIN TRAVEL account is ready. You can now save destinations, track your enquiries '
+             f'and get travel ideas tailored to the way you like to travel.</p>'
+             f'<p>Wherever you are dreaming of going next, we are here to help you plan it beautifully.</p>'
+             f'<p style="margin-top:16px">Discover more. Travel better.<br/><strong>The DORIN TRAVEL team</strong></p>')
+    return await send_email(to=to, subject="Welcome to DORIN TRAVEL", html=_wrap(inner))
+
+
+async def send_enquiry_confirmation(to: str, name: str, destination: str):
+    dest = f" to <strong>{escape(destination)}</strong>" if destination else ""
+    inner = (f'<h1 style="font-family:Georgia,serif;font-size:24px;margin:0 0 12px">Thank you, {escape(name)}</h1>'
+             f'<p>We have received your travel enquiry{dest} and one of our UK-based specialists will be '
+             f'in touch within 24 hours with personalised ideas.</p>'
+             f'<p>In the meantime, feel free to keep exploring destinations and offers on our site.</p>'
+             f'<p style="margin-top:16px">Discover more. Travel better.<br/><strong>The DORIN TRAVEL team</strong></p>')
+    return await send_email(to=to, subject="We've received your DORIN TRAVEL enquiry", html=_wrap(inner))
 
 
 async def require_admin(request: Request) -> dict:
@@ -126,17 +242,20 @@ async def require_admin(request: Request) -> dict:
 # ----------------------------------------------------------------------------
 # Models
 # ----------------------------------------------------------------------------
-class RegisterIn(BaseModel):
-    first_name: str
-    last_name: str
-    email: EmailStr
-    password: str = Field(min_length=6)
-    marketing_opt_in: bool = False
+class SessionIn(BaseModel):
+    session_id: Optional[str] = None
 
 
-class LoginIn(BaseModel):
-    email: EmailStr
-    password: str
+class BlogArticleIn(BaseModel):
+    title: str
+    category: str
+    excerpt: str
+    image: str
+    content: str
+    author: Optional[str] = "The DORIN Team"
+    read_time: Optional[str] = "5 min read"
+    date: Optional[str] = None
+    slug: Optional[str] = None
 
 
 class NewsletterIn(BaseModel):
@@ -189,73 +308,80 @@ class TrackIn(BaseModel):
 # ----------------------------------------------------------------------------
 # App + router
 # ----------------------------------------------------------------------------
-app = FastAPI(title="VOYARA Travel API")
+app = FastAPI(title="DORIN Travel API")
 api_router = APIRouter(prefix="/api")
 
 
 @api_router.get("/")
 async def root():
-    return {"message": "VOYARA Travel API"}
+    return {"message": "DORIN Travel API"}
 
 
-# ----------------------- Auth -----------------------
-@api_router.post("/auth/register")
-async def register(body: RegisterIn, response: Response):
-    email = body.email.lower()
-    if await db.users.find_one({"email": email}):
-        raise HTTPException(status_code=400, detail="An account with this email already exists.")
-    doc = {
-        "email": email,
-        "password_hash": hash_password(body.password),
-        "first_name": body.first_name.strip(),
-        "last_name": body.last_name.strip(),
-        "role": "customer",
-        "marketing_opt_in": body.marketing_opt_in,
-        "preferences": {},
-        "saved_destinations": [],
-        "saved_offers": [],
-        "created_at": now_iso(),
-    }
-    res = await db.users.insert_one(doc)
-    doc["_id"] = res.inserted_id
-    uid = str(res.inserted_id)
-    if body.marketing_opt_in:
-        await db.leads.insert_one({"type": "newsletter", "first_name": body.first_name,
-                                   "email": email, "interests": [], "source": "registration",
-                                   "created_at": now_iso()})
-    set_auth_cookies(response, create_access_token(uid, email), create_refresh_token(uid))
-    return serialize_user(doc)
+# ----------------------- Auth (Google OAuth) -----------------------
+@api_router.post("/auth/session")
+async def auth_session(request: Request, response: Response, body: SessionIn = None):
+    session_id = request.headers.get("X-Session-ID")
+    if not session_id and body:
+        session_id = body.session_id
+    if not session_id:
+        raise HTTPException(status_code=400, detail="Missing session id")
+    try:
+        async with httpx.AsyncClient(timeout=30) as hc:
+            r = await hc.get(EMERGENT_SESSION_URL, headers={"X-Session-ID": session_id})
+    except Exception as e:
+        logger.error(f"session-data call failed: {e}")
+        raise HTTPException(status_code=502, detail="Auth provider unreachable")
+    if r.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid or expired session")
+    data = r.json()
+    email = (data.get("email") or "").lower()
+    if not email:
+        raise HTTPException(status_code=401, detail="No email from provider")
+    name = data.get("name") or email.split("@")[0]
+    picture = data.get("picture") or ""
+    session_token = data["session_token"]
+    admin_email = os.environ.get("ADMIN_EMAIL", "").lower()
+    parts = name.split(" ", 1)
+    first_name, last_name = parts[0], (parts[1] if len(parts) > 1 else "")
 
+    existing = await db.users.find_one({"email": email})
+    is_new = existing is None
+    if is_new:
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        await db.users.insert_one({
+            "user_id": user_id, "email": email, "name": name,
+            "first_name": first_name, "last_name": last_name, "picture": picture,
+            "role": "admin" if email == admin_email else "customer",
+            "marketing_opt_in": False, "preferences": {},
+            "saved_destinations": [], "saved_offers": [], "created_at": now_iso(),
+        })
+    else:
+        user_id = existing.get("user_id") or f"user_{uuid.uuid4().hex[:12]}"
+        update = {"name": name, "picture": picture, "user_id": user_id}
+        if email == admin_email and existing.get("role") != "admin":
+            update["role"] = "admin"
+        await db.users.update_one({"_id": existing["_id"]}, {"$set": update})
 
-@api_router.post("/auth/login")
-async def login(body: LoginIn, request: Request, response: Response):
-    email = body.email.lower()
-    ip = request.client.host if request.client else "unknown"
-    identifier = f"{ip}:{email}"
-    attempt = await db.login_attempts.find_one({"identifier": identifier})
-    if attempt and attempt.get("count", 0) >= 5:
-        locked_until = attempt.get("locked_until")
-        if locked_until and datetime.fromisoformat(locked_until) > datetime.now(timezone.utc):
-            raise HTTPException(status_code=429, detail="Too many failed attempts. Try again in a few minutes.")
-    user = await db.users.find_one({"email": email})
-    if not user or not verify_password(body.password, user["password_hash"]):
-        new_count = (attempt.get("count", 0) if attempt else 0) + 1
-        await db.login_attempts.update_one(
-            {"identifier": identifier},
-            {"$set": {"count": new_count,
-                      "locked_until": (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat()}},
-            upsert=True)
-        raise HTTPException(status_code=401, detail="Invalid email or password.")
-    await db.login_attempts.delete_one({"identifier": identifier})
-    uid = str(user["_id"])
-    set_auth_cookies(response, create_access_token(uid, email), create_refresh_token(uid))
+    expires = datetime.now(timezone.utc) + timedelta(days=SESSION_TTL_DAYS)
+    await db.user_sessions.update_one(
+        {"session_token": session_token},
+        {"$set": {"user_id": user_id, "session_token": session_token,
+                  "expires_at": expires.isoformat(), "created_at": now_iso()}},
+        upsert=True)
+    set_session_cookie(response, session_token)
+
+    user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    if is_new:
+        await send_welcome_email(email, first_name or name)
     return serialize_user(user)
 
 
 @api_router.post("/auth/logout")
-async def logout(response: Response):
-    response.delete_cookie("access_token", path="/")
-    response.delete_cookie("refresh_token", path="/")
+async def logout(request: Request, response: Response):
+    token = request.cookies.get("session_token")
+    if token:
+        await db.user_sessions.delete_one({"session_token": token})
+    response.delete_cookie("session_token", path="/")
     return {"message": "Logged out"}
 
 
@@ -264,30 +390,11 @@ async def me(user: dict = Depends(get_current_user)):
     return serialize_user(user)
 
 
-@api_router.post("/auth/refresh")
-async def refresh(request: Request, response: Response):
-    token = request.cookies.get("refresh_token")
-    if not token:
-        raise HTTPException(status_code=401, detail="No refresh token")
-    try:
-        payload = jwt.decode(token, get_jwt_secret(), algorithms=[JWT_ALGORITHM])
-        if payload.get("type") != "refresh":
-            raise HTTPException(status_code=401, detail="Invalid token type")
-        user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
-        if not user:
-            raise HTTPException(status_code=401, detail="User not found")
-        response.set_cookie("access_token", create_access_token(str(user["_id"]), user["email"]),
-                            httponly=True, secure=True, samesite="none", max_age=3600, path="/")
-        return {"message": "refreshed"}
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-
 # ----------------------- Account / Dashboard -----------------------
 @api_router.put("/me/preferences")
 async def update_preferences(body: PreferencesIn, user: dict = Depends(get_current_user)):
-    await db.users.update_one({"_id": user["_id"]}, {"$set": {"preferences": body.model_dump()}})
-    updated = await db.users.find_one({"_id": user["_id"]})
+    await db.users.update_one({"user_id": user["user_id"]}, {"$set": {"preferences": body.model_dump()}})
+    updated = await db.users.find_one({"user_id": user["user_id"]}, {"_id": 0})
     return serialize_user(updated)
 
 
@@ -299,14 +406,14 @@ async def toggle_saved(body: SavedToggleIn, user: dict = Depends(get_current_use
         current.remove(body.item_id)
     else:
         current.append(body.item_id)
-    await db.users.update_one({"_id": user["_id"]}, {"$set": {field: current}})
+    await db.users.update_one({"user_id": user["user_id"]}, {"$set": {field: current}})
     return {field: current}
 
 
 @api_router.get("/me/trips")
 async def my_trips(user: dict = Depends(get_current_user)):
     trips = await db.leads.find(
-        {"user_id": str(user["_id"]), "type": {"$in": ["enquiry", "contact"]}}
+        {"user_id": user["user_id"], "type": {"$in": ["enquiry", "contact"]}}
     ).sort("created_at", -1).to_list(100)
     return [{"id": str(t["_id"]), "destination": t.get("destination", ""),
              "trip_type": t.get("trip_type", ""), "travel_dates": t.get("travel_dates", ""),
@@ -327,7 +434,7 @@ async def newsletter(body: NewsletterIn):
 async def _optional_user_id(request: Request) -> Optional[str]:
     try:
         u = await get_current_user(request)
-        return str(u["_id"])
+        return u["user_id"]
     except HTTPException:
         return None
 
@@ -338,6 +445,7 @@ async def enquiry(body: EnquiryIn, request: Request):
     doc.update({"type": "enquiry", "email": body.email.lower(), "status": "Enquiry received",
                 "user_id": await _optional_user_id(request), "created_at": now_iso()})
     await db.leads.insert_one(doc)
+    await send_enquiry_confirmation(body.email.lower(), body.name, body.destination or "")
     return {"message": "Thank you! One of our travel specialists will be in touch within 24 hours."}
 
 
@@ -347,6 +455,7 @@ async def contact(body: ContactIn, request: Request):
     doc.update({"type": "contact", "email": body.email.lower(), "status": "Enquiry received",
                 "user_id": await _optional_user_id(request), "created_at": now_iso()})
     await db.leads.insert_one(doc)
+    await send_enquiry_confirmation(body.email.lower(), body.name, body.destination or "")
     return {"message": "Your enquiry has been sent. We'll reply within one business day."}
 
 
@@ -383,6 +492,55 @@ async def get_article(slug: str):
         r["id"] = str(r.pop("_id"))
     article["related"] = related
     return article
+
+
+# ----------------------- Blog admin (CMS) -----------------------
+def _slugify(title: str) -> str:
+    s = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+    return s[:80] or uuid.uuid4().hex[:8]
+
+
+@api_router.get("/admin/blog")
+async def admin_list_blog(_: dict = Depends(require_admin)):
+    arts = await db.blog_articles.find().sort("date", -1).to_list(200)
+    for a in arts:
+        a["id"] = str(a.pop("_id"))
+    return arts
+
+
+@api_router.post("/blog")
+async def create_article(body: BlogArticleIn, _: dict = Depends(require_admin)):
+    slug = body.slug or _slugify(body.title)
+    if await db.blog_articles.find_one({"slug": slug}):
+        slug = f"{slug}-{uuid.uuid4().hex[:4]}"
+    doc = {"slug": slug, "title": body.title, "category": body.category,
+           "excerpt": body.excerpt, "image": body.image, "content": body.content,
+           "author": body.author or "The DORIN Team",
+           "read_time": body.read_time or "5 min read",
+           "date": body.date or now_iso()[:10]}
+    res = await db.blog_articles.insert_one(doc)
+    doc.pop("_id", None)
+    doc["id"] = str(res.inserted_id)
+    return doc
+
+
+@api_router.put("/blog/{article_id}")
+async def update_article(article_id: str, body: BlogArticleIn, _: dict = Depends(require_admin)):
+    update = {k: v for k, v in body.model_dump().items() if v is not None and k != "slug"}
+    res = await db.blog_articles.update_one({"_id": ObjectId(article_id)}, {"$set": update})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Article not found")
+    art = await db.blog_articles.find_one({"_id": ObjectId(article_id)})
+    art["id"] = str(art.pop("_id"))
+    return art
+
+
+@api_router.delete("/blog/{article_id}")
+async def delete_article(article_id: str, _: dict = Depends(require_admin)):
+    res = await db.blog_articles.delete_one({"_id": ObjectId(article_id)})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return {"message": "Article deleted"}
 
 
 # ----------------------- Analytics -----------------------
@@ -511,13 +669,13 @@ BLOG_SEED = [
         "content": "Paris is elegance and edit: grand boulevards, world-class museums and a cafe culture built for people-watching. Rome is layered chaos in the best way, with ancient ruins around every corner and food that prizes simplicity above all.\n\nChoose Paris for art, fashion and romance, and for a city that rewards slow, stylish days. Choose Rome for history you can touch, lively piazzas and arguably the best-value dining of any major European capital.\n\nStill can't decide? Both are superb for first-timers. Our specialists often pair them into a single twin-city itinerary connected by a short flight or scenic train.",
     },
     {
-        "slug": "5-reasons-book-city-break-with-voyara",
-        "title": "5 Reasons to Book Your Next City Break With VOYARA",
+        "slug": "5-reasons-book-city-break-with-dorin",
+        "title": "5 Reasons to Book Your Next City Break With DORIN",
         "category": "Travel Guides",
         "excerpt": "From handpicked hotels to 24/7 UK support, here's what changes when you plan your trip with a specialist rather than a search engine.",
         "image": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
-        "author": "The VOYARA Team", "read_time": "5 min read", "date": "2026-03-17",
-        "content": "Booking with a specialist isn't about paying more; it's about travelling better. Here's what sets a VOYARA city break apart.\n\nFirst, every itinerary is personalised to how you actually like to travel. Second, our hotels are handpicked and visited, not pulled from an endless list. Third, you get one point of contact who knows your trip inside out.\n\nFourth, our UK-based team is on hand around the clock if plans change. And fifth, transparent pricing means no surprises. The result is a trip that feels designed for you, with none of the stress of planning it alone.",
+        "author": "The DORIN Team", "read_time": "5 min read", "date": "2026-03-17",
+        "content": "Booking with a specialist isn't about paying more; it's about travelling better. Here's what sets a DORIN city break apart.\n\nFirst, every itinerary is personalised to how you actually like to travel. Second, our hotels are handpicked and visited, not pulled from an endless list. Third, you get one point of contact who knows your trip inside out.\n\nFourth, our UK-based team is on hand around the clock if plans change. And fifth, transparent pricing means no surprises. The result is a trip that feels designed for you, with none of the stress of planning it alone.",
     },
     {
         "slug": "best-european-destinations-2027",
@@ -525,7 +683,7 @@ BLOG_SEED = [
         "category": "Destination Inspiration",
         "excerpt": "The places our specialists are most excited about next year, from rising-star cities to coastlines before the crowds arrive.",
         "image": "https://images.unsplash.com/photo-1579282240050-352db0a14c21?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
-        "author": "The VOYARA Team", "read_time": "7 min read", "date": "2026-03-09",
+        "author": "The DORIN Team", "read_time": "7 min read", "date": "2026-03-09",
         "content": "Every year a handful of destinations shift from insider tip to must-visit. For 2027, we're watching the Albanian Riviera for Mediterranean beauty at a fraction of the price, and Tbilisi for a food and wine scene that's quietly become one of Europe's most exciting.\n\nClassic favourites are evolving too: Portugal's Azores for wild green drama, Slovenia for lake-and-mountain serenity, and the Baltic capitals for walkable charm and real value.\n\nWherever 2027 takes you, book the headline spots early and keep a little flexibility for the places that surprise you along the way.",
     },
     {
@@ -543,31 +701,16 @@ BLOG_SEED = [
 @app.on_event("startup")
 async def startup():
     await db.users.create_index("email", unique=True)
-    await db.login_attempts.create_index("identifier")
+    await db.users.create_index("user_id")
+    await db.user_sessions.create_index("session_token", unique=True)
     await db.leads.create_index("created_at")
     await db.analytics_events.create_index("created_at")
     await db.blog_articles.create_index("slug", unique=True)
 
-    # admin seed
-    admin_email = os.environ.get("ADMIN_EMAIL", "admin@voyaratravel.com").lower()
-    admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
-    existing = await db.users.find_one({"email": admin_email})
-    if existing is None:
-        await db.users.insert_one({
-            "email": admin_email, "password_hash": hash_password(admin_password),
-            "first_name": "VOYARA", "last_name": "Admin", "role": "admin",
-            "marketing_opt_in": False, "preferences": {}, "saved_destinations": [],
-            "saved_offers": [], "created_at": now_iso(),
-        })
-        logger.info("Seeded admin user")
-    elif not verify_password(admin_password, existing["password_hash"]):
-        await db.users.update_one({"email": admin_email},
-                                  {"$set": {"password_hash": hash_password(admin_password)}})
-
     # blog seed (idempotent)
     for art in BLOG_SEED:
         await db.blog_articles.update_one({"slug": art["slug"]}, {"$setOnInsert": art}, upsert=True)
-    logger.info("Blog seed complete")
+    logger.info("Startup seed complete")
 
 
 @app.on_event("shutdown")

@@ -6,8 +6,8 @@ const DOCS = {
   terms: {
     title: "Terms & Conditions",
     body: [
-      "These terms govern your use of the VOYARA Travel website and services. By using our site you agree to these terms.",
-      "VOYARA acts as a travel agent arranging holidays and experiences. All bookings are subject to the terms of the relevant travel providers, which will be shared with you before you book.",
+      "These terms govern your use of the DORIN Travel website and services. By using our site you agree to these terms.",
+      "DORIN acts as a travel agent arranging holidays and experiences. All bookings are subject to the terms of the relevant travel providers, which will be shared with you before you book.",
       "Prices shown are indicative, per person and subject to availability. Final pricing is confirmed in your personalised quote.",
       "This is a fictional brand created for a university Digital Business & E-Marketing project and does not sell real travel.",
     ],
@@ -37,7 +37,7 @@ export default function LegalPage() {
   const content = DOCS[doc] || DOCS.terms;
   return (
     <div data-testid="legal-page" className="pt-36 pb-20">
-      <Seo title={`${content.title} | VOYARA Travel`} description={`${content.title} for VOYARA Travel.`} />
+      <Seo title={`${content.title} | DORIN Travel`} description={`${content.title} for DORIN Travel.`} />
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <p className="overline text-[#2A4038] mb-3">Legal</p>
         <h1 className="font-serif text-4xl font-semibold mb-8">{content.title}</h1>

@@ -78,7 +78,7 @@ function WhyChooseUs() {
   return (
     <section className="bg-[#2A4038] text-white py-20 sm:py-28" data-testid="why-choose-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading overline="Why VOYARA" title="Travel better, from the very first click." light
+        <SectionHeading overline="Why DORIN" title="Travel better, from the very first click." light
           subtitle="We blend inspiration with genuine expertise so your trip feels personal, protected and effortless." />
         <div ref={ref} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
           {WHY.map((w, i) => (
@@ -112,7 +112,7 @@ export default function HomePage() {
 
   return (
     <div data-testid="home-page">
-      <Seo title="VOYARA Travel | Discover More. Travel Better." description="VOYARA is a modern digital travel agency helping you discover inspiring destinations, curated experiences and personalised holidays. Explore destinations, plan your trip and request a quote." />
+      <Seo title="DORIN Travel | Discover More. Travel Better." description="DORIN is a modern digital travel agency helping you discover inspiring destinations, curated experiences and personalised holidays. Explore destinations, plan your trip and request a quote." />
 
       {/* HERO */}
       <section className="relative min-h-[92vh] flex items-end overflow-hidden" data-testid="hero-section">
@@ -229,7 +229,7 @@ export default function HomePage() {
       <section className="bg-[#F5F2EC] py-20 sm:py-28" data-testid="testimonials-section" id="reviews">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading overline="What our travellers say" title="Trusted by travellers across the UK"
-            subtitle="Real words from real trips. This is why people keep coming back to VOYARA." align="center" />
+            subtitle="Real words from real trips. This is why people keep coming back to DORIN." align="center" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
             {TESTIMONIALS.map((t, i) => (
               <figure key={i} data-testid={`testimonial-${i}`} className="rounded-2xl bg-white border border-[#E2DDD5] p-7 flex flex-col">
@@ -266,8 +266,8 @@ export default function HomePage() {
 
       {/* SOCIAL GALLERY */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28" data-testid="social-gallery-section">
-        <SectionHeading overline="@voyaratravel" title="Follow the journey" align="center"
-          subtitle="Tag #VoyaraTravel to be featured. Real moments from our travellers around the world." />
+        <SectionHeading overline="@dorintravel" title="Follow the journey" align="center"
+          subtitle="Tag #DorinTravel to be featured. Real moments from our travellers around the world." />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-12">
           {SOCIAL_GALLERY.map((src, i) => (
             <a key={i} href="https://instagram.com" target="_blank" rel="noopener noreferrer" data-testid={`social-tile-${i}`}

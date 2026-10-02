@@ -13,7 +13,7 @@ export default function TripsPage() {
 
   return (
     <div data-testid="trips-page">
-      <Seo title="Trips & Experiences | VOYARA Travel" description="Explore VOYARA's curated travel experiences: city breaks, beach escapes, adventure trips, romantic getaways, family holidays and luxury journeys. Find the trip made for you." />
+      <Seo title="Trips & Experiences | DORIN Travel" description="Explore DORIN's curated travel experiences: city breaks, beach escapes, adventure trips, romantic getaways, family holidays and luxury journeys. Find the trip made for you." />
 
       <section className="relative pt-36 pb-16 bg-[#2A4038] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

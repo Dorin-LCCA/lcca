@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import api, { formatApiErrorDetail } from "../lib/api";
+import api from "../lib/api";
 
 const AuthContext = createContext(null);
 
@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null = checking, false = anon, object = user
   const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const { data } = await api.get("/auth/me");
       setUser(data);
@@ -19,27 +19,24 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
-
-  const login = async (email, password) => {
-    try {
-      const { data } = await api.post("/auth/login", { email, password });
-      setUser(data);
-      return { ok: true };
-    } catch (e) {
-      return { ok: false, error: formatApiErrorDetail(e.response?.data?.detail) || e.message };
+    // If returning from OAuth callback, skip the /me check — AuthCallback handles it.
+    if (window.location.hash && window.location.hash.includes("session_id=")) {
+      setLoading(false);
+      return;
     }
+    checkAuth();
+  }, [checkAuth]);
+
+  const loginWithGoogle = () => {
+    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    const redirectUrl = window.location.origin + "/dashboard";
+    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
   };
 
-  const register = async (payload) => {
-    try {
-      const { data } = await api.post("/auth/register", payload);
-      setUser(data);
-      return { ok: true };
-    } catch (e) {
-      return { ok: false, error: formatApiErrorDetail(e.response?.data?.detail) || e.message };
-    }
+  const processSession = async (sessionId) => {
+    const { data } = await api.post("/auth/session", {}, { headers: { "X-Session-ID": sessionId } });
+    setUser(data);
+    return data;
   };
 
   const logout = async () => {
@@ -54,7 +51,7 @@ export function AuthProvider({ children }) {
   const setUserData = (data) => setUser(data);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refresh, setUserData }}>
+    <AuthContext.Provider value={{ user, loading, loginWithGoogle, processSession, logout, refresh: checkAuth, setUserData }}>
       {children}
     </AuthContext.Provider>
   );

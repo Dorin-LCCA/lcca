@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AuthProvider } from "./context/AuthContext";
 import { PlanTripProvider } from "./context/PlanTripContext";
@@ -22,8 +22,14 @@ import DashboardPage from "./pages/DashboardPage";
 import AdminPage from "./pages/AdminPage";
 import LegalPage from "./pages/LegalPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import AuthCallback from "./pages/AuthCallback";
 
 function Shell() {
+  const location = useLocation();
+  // Handle the OAuth return fragment first, before anything else renders.
+  if (location.hash && location.hash.includes("session_id=")) {
+    return <AuthCallback />;
+  }
   return (
     <>
       <Navbar />

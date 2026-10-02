@@ -53,7 +53,7 @@ export default function DashboardPage() {
 
   return (
     <div className="pt-28 pb-20 min-h-screen bg-[#F5F2EC]" data-testid="dashboard-page">
-      <Seo title="My Dashboard | VOYARA Travel" description="Manage your trips, saved destinations and travel preferences." />
+      <Seo title="My Dashboard | DORIN Travel" description="Manage your trips, saved destinations and travel preferences." />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
           <div>

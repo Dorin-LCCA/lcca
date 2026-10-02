@@ -52,7 +52,7 @@ export default function Navbar() {
             scrolled ? "text-[#1C1E1D]" : "text-white"
           }`}
         >
-          VOYARA<span className="text-[#C86D51]">.</span>
+          DORIN<span className="text-[#C86D51]">.</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7">

@@ -1,10 +1,10 @@
 import api from "./api";
 
 function getSessionId() {
-  let id = localStorage.getItem("voyara_session");
+  let id = localStorage.getItem("dorin_session");
   if (!id) {
     id = "s_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
-    localStorage.setItem("voyara_session", id);
+    localStorage.setItem("dorin_session", id);
   }
   return id;
 }

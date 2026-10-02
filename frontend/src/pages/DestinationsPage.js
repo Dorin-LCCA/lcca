@@ -77,7 +77,7 @@ export default function DestinationsPage() {
 
   return (
     <div data-testid="destinations-page">
-      <Seo title="Destinations | VOYARA Travel" description="Explore VOYARA's handpicked destinations across Europe, Asia, the Middle East and beyond. Filter by region, budget, trip type and duration to find your perfect escape." />
+      <Seo title="Destinations | DORIN Travel" description="Explore DORIN's handpicked destinations across Europe, Asia, the Middle East and beyond. Filter by region, budget, trip type and duration to find your perfect escape." />
 
       {/* Page hero */}
       <section className="relative pt-36 pb-16 bg-[#2A4038] text-white overflow-hidden">

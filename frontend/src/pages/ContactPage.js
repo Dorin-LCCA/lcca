@@ -33,7 +33,7 @@ export default function ContactPage() {
 
   return (
     <div data-testid="contact-page">
-      <Seo title="Contact Us | VOYARA Travel" description="Get in touch with VOYARA Travel. Send a travel enquiry, request a quote, or visit our London office. UK-based specialists ready to help plan your trip." />
+      <Seo title="Contact Us | DORIN Travel" description="Get in touch with DORIN Travel. Send a travel enquiry, request a quote, or visit our London office. UK-based specialists ready to help plan your trip." />
 
       <section className="relative pt-36 pb-14 bg-[#2A4038] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,7 +79,7 @@ export default function ContactPage() {
           <aside className="space-y-4">
             <div className="rounded-2xl border border-[#E2DDD5] bg-white p-7 space-y-5">
               {[
-                { icon: Mail, label: "Email", value: "hello@voyaratravel.com" },
+                { icon: Mail, label: "Email", value: "hello@dorintravel.com" },
                 { icon: Phone, label: "Phone", value: "+44 20 7946 0123" },
                 { icon: Clock, label: "Opening hours", value: "Mon–Fri 9am–7pm · Sat 10am–4pm" },
                 { icon: MapPin, label: "London office", value: "24 Carnaby Street, Soho, London W1F" },
@@ -97,7 +97,7 @@ export default function ContactPage() {
             </div>
             <div className="rounded-2xl overflow-hidden border border-[#E2DDD5] h-64">
               <iframe
-                title="VOYARA London office map"
+                title="DORIN London office map"
                 data-testid="contact-map"
                 className="w-full h-full"
                 loading="lazy"

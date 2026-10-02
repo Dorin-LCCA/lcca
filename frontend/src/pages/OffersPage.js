@@ -30,7 +30,7 @@ export default function OffersPage() {
 
   return (
     <div data-testid="offers-page">
-      <Seo title="Travel Offers & Deals | VOYARA Travel" description="Discover VOYARA's latest travel offers: weekend escapes, early booking deals, seasonal breaks and luxury getaways. Premium holidays at transparent prices." />
+      <Seo title="Travel Offers & Deals | DORIN Travel" description="Discover DORIN's latest travel offers: weekend escapes, early booking deals, seasonal breaks and luxury getaways. Premium holidays at transparent prices." />
 
       <section className="relative pt-36 pb-16 bg-[#2A4038] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

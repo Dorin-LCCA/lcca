@@ -5,7 +5,7 @@ import VButton from "../components/VButton";
 export default function NotFoundPage() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center pt-36 pb-20 px-4" data-testid="not-found-page">
-      <Seo title="Page not found | VOYARA Travel" description="The page you were looking for could not be found." />
+      <Seo title="Page not found | DORIN Travel" description="The page you were looking for could not be found." />
       <div className="text-center max-w-md">
         <p className="font-serif text-7xl font-semibold text-[#2A4038]">404</p>
         <h1 className="font-serif text-3xl font-semibold mt-4">This destination doesn't exist</h1>

@@ -1,90 +1,72 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { ShieldCheck, Sparkles, Heart } from "lucide-react";
 import Seo from "../components/Seo";
 import VButton from "../components/VButton";
 import { useAuth } from "../context/AuthContext";
-import { track } from "../lib/analytics";
 
 const HERO = "https://images.unsplash.com/photo-1672622851784-0dbd3df4c088?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200";
 
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />
+    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.23 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
+    <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z" />
+    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.05l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z" />
+  </svg>
+);
+
+const PERKS = [
+  { icon: Heart, text: "Save destinations and offers you love" },
+  { icon: Sparkles, text: "Get recommendations tailored to you" },
+  { icon: ShieldCheck, text: "Track your enquiries in one place" },
+];
+
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { user, loading, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
-  const [show, setShow] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
 
-  const field = "w-full rounded-xl border border-[#E2DDD5] bg-[#FDFBF7] px-4 py-3 text-sm outline-none focus:border-[#2A4038] transition-colors";
-
-  const submit = async (e) => {
-    e.preventDefault();
-    setBusy(true); setError("");
-    const res = await login(email, password);
-    setBusy(false);
-    if (res.ok) {
-      track("login", { method: "password" });
-      toast.success("Welcome back!");
-      navigate("/dashboard");
-    } else {
-      setError(res.error);
-    }
-  };
+  useEffect(() => {
+    if (!loading && user && user.id) navigate(user.role === "admin" ? "/admin" : "/dashboard", { replace: true });
+  }, [user, loading, navigate]);
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2" data-testid="login-page">
-      <Seo title="Login | VOYARA Travel" description="Sign in to your VOYARA Travel account to manage your trips, saved destinations and travel preferences." />
+      <Seo title="Sign In | DORIN Travel" description="Sign in to your DORIN Travel account with Google to manage your trips, saved destinations and travel preferences." />
       <div className="relative hidden lg:block">
         <img src={HERO} alt="Santorini at sunset" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-[#2A4038]/50" />
+        <div className="absolute inset-0 bg-[#2A4038]/55" />
         <div className="absolute bottom-10 left-10 right-10 text-white">
-          <Link to="/" className="font-serif text-3xl font-semibold">VOYARA<span className="text-[#C86D51]">.</span></Link>
+          <Link to="/" className="font-serif text-3xl font-semibold">DORIN<span className="text-[#C86D51]">.</span></Link>
           <p className="font-serif text-2xl mt-4 max-w-sm">Your trips, saved places and preferences, all in one place.</p>
         </div>
       </div>
 
       <div className="flex items-center justify-center p-6 sm:p-10 pt-28 lg:pt-10">
         <div className="w-full max-w-sm">
-          <Link to="/" className="lg:hidden font-serif text-2xl font-semibold block mb-8">VOYARA<span className="text-[#C86D51]">.</span></Link>
-          <p className="overline text-[#2A4038] mb-2">Welcome back</p>
-          <h1 className="font-serif text-3xl font-semibold mb-6">Sign in to your account</h1>
+          <Link to="/" className="lg:hidden font-serif text-2xl font-semibold block mb-8">DORIN<span className="text-[#C86D51]">.</span></Link>
+          <p className="overline text-[#2A4038] mb-2">Welcome to DORIN TRAVEL</p>
+          <h1 className="font-serif text-3xl sm:text-4xl font-semibold mb-3">Sign in or create your account</h1>
+          <p className="text-[#4A4E4B] mb-8">One tap with Google. No passwords to remember, no forms to fill.</p>
 
-          {error && <div className="mb-4 text-sm text-[#B0593B] bg-[#C86D51]/10 border border-[#C86D51]/30 rounded-lg px-4 py-3" data-testid="login-error">{error}</div>}
-
-          <form onSubmit={submit} className="space-y-4">
-            <input className={field} type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} data-testid="login-email" aria-label="Email" required />
-            <div className="relative">
-              <input className={field} type={show ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} data-testid="login-password" aria-label="Password" required />
-              <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#767B78]" aria-label="Toggle password">
-                {show ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-[#4A4E4B] cursor-pointer">
-                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} data-testid="login-remember" className="accent-[#2A4038]" /> Remember me
-              </label>
-              <button type="button" onClick={() => toast.info("Password reset link would be emailed to you.")} className="text-[#2A4038] font-medium hover:underline" data-testid="forgot-password">Forgot password?</button>
-            </div>
-            <VButton type="submit" variant="primary" size="lg" className="w-full" disabled={busy} data-testid="login-submit">
-              {busy ? "Signing in..." : "Login"}
-            </VButton>
-          </form>
-
-          <div className="flex items-center gap-3 my-5">
-            <div className="h-px bg-[#E2DDD5] flex-1" />
-            <span className="text-xs text-[#767B78]">or</span>
-            <div className="h-px bg-[#E2DDD5] flex-1" />
-          </div>
-          <VButton variant="outline" size="lg" className="w-full" onClick={() => toast.info("Google sign-in would be enabled in production.")} data-testid="google-login">
-            Continue with Google
+          <VButton variant="light" size="lg" className="w-full border border-[#E2DDD5] !bg-white hover:!bg-[#F5F2EC]" onClick={loginWithGoogle} data-testid="google-login-btn">
+            <GoogleIcon /> Continue with Google
           </VButton>
 
-          <p className="text-sm text-[#4A4E4B] text-center mt-6">
-            New to VOYARA? <Link to="/signup" className="text-[#2A4038] font-semibold hover:underline" data-testid="go-to-signup">Create an account</Link>
+          <ul className="mt-8 space-y-3">
+            {PERKS.map((p) => (
+              <li key={p.text} className="flex items-center gap-3 text-sm text-[#4A4E4B]">
+                <span className="w-8 h-8 rounded-full bg-[#2A4038]/8 flex items-center justify-center shrink-0">
+                  <p.icon size={15} className="text-[#2A4038]" />
+                </span>
+                {p.text}
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-xs text-[#767B78] mt-8">
+            By continuing you agree to our <Link to="/legal/terms" className="underline">Terms</Link> and <Link to="/legal/privacy" className="underline">Privacy Policy</Link>.
           </p>
         </div>
       </div>

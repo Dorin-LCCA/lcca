@@ -28,7 +28,7 @@ export default function AboutPage() {
 
   return (
     <div data-testid="about-page">
-      <Seo title="About Us | VOYARA Travel" description="VOYARA is a modern digital travel agency built on the belief that travel should feel personal. Discover our story, mission and values, and how we plan trips." />
+      <Seo title="About Us | DORIN Travel" description="DORIN is a modern digital travel agency built on the belief that travel should feel personal. Discover our story, mission and values, and how we plan trips." />
 
       <section className="relative pt-36 pb-20 bg-[#2A4038] text-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
@@ -36,7 +36,7 @@ export default function AboutPage() {
             <p className="overline text-[#D4A359] mb-4">Our story</p>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-[1.1] text-balance">Travel should feel personal.</h1>
             <p className="mt-6 text-lg text-white/80 font-light leading-relaxed">
-              VOYARA began with a simple frustration: planning a great trip had become overwhelming. Endless tabs, generic packages and no one who actually knew you. We built a different kind of travel company, one that blends digital convenience with real human expertise.
+              DORIN began with a simple frustration: planning a great trip had become overwhelming. Endless tabs, generic packages and no one who actually knew you. We built a different kind of travel company, one that blends digital convenience with real human expertise.
             </p>
           </div>
           <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">

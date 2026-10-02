@@ -34,7 +34,7 @@ export default function BlogArticlePage() {
 
   return (
     <div data-testid="blog-article-page">
-      <Seo title={`${article.title} | VOYARA Travel Journal`} description={article.excerpt} />
+      <Seo title={`${article.title} | DORIN Travel Journal`} description={article.excerpt} />
 
       <section className="relative h-[60vh] min-h-[400px] flex items-end">
         <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />
