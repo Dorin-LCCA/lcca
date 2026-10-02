@@ -31,11 +31,12 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 20
-          cache: yarn
-          cache-dependency-path: frontend/yarn.lock
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Build React app
         run: yarn build
