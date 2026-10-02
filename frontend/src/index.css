@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --voyara-bg: #FDFBF7;
+  --voyara-bg-secondary: #F5F2EC;
+  --voyara-surface: #FFFFFF;
+  --voyara-muted: #EFECE6;
+  --voyara-text: #1C1E1D;
+  --voyara-text-secondary: #4A4E4B;
+  --voyara-text-muted: #767B78;
+  --voyara-green: #2A4038;
+  --voyara-green-hover: #1E2F28;
+  --voyara-terracotta: #C86D51;
+  --voyara-terracotta-hover: #B0593B;
+  --voyara-gold: #D4A359;
+  --voyara-border: #E2DDD5;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--voyara-bg);
+  color: var(--voyara-text);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.font-serif { font-family: 'Playfair Display', Georgia, serif; }
+.font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+::selection {
+  background: var(--voyara-green);
+  color: #FDFBF7;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--voyara-muted); }
+::-webkit-scrollbar-thumb { background: #b9b2a6; border-radius: 6px; border: 3px solid var(--voyara-muted); }
+::-webkit-scrollbar-thumb:hover { background: var(--voyara-green); }
+
+.overline {
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Focus visibility for accessibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--voyara-green);
+  outline-offset: 2px;
+}
+
+@keyframes voyara-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0;
+}
+.reveal.in-view {
+  animation: voyara-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes voyara-ken-burns {
+  from { transform: scale(1.08); }
+  to { transform: scale(1.18); }
+}
+.ken-burns { animation: voyara-ken-burns 18s ease-out forwards; }
+
+.text-balance { text-wrap: balance; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .reveal.in-view, .ken-burns { animation: none; opacity: 1; transform: none; }
+}

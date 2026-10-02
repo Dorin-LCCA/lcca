@@ -1,0 +1,231 @@
+{
+  "brand": {
+    "name": "VOYARA TRAVEL",
+    "tagline": "Discover more. Travel better.",
+    "target_audience": "Young professionals, students, couples, families, and solo travelers in the UK & London seeking authentic, high-end commercial travel experiences.",
+    "aesthetic_archetype": "Editorial Luxury Travel Magazine & High-End Commercial Agency",
+    "vibe": "Cinematic, inspiring, serene, trustworthy, warm, spacious, sophisticated"
+  },
+  "typography": {
+    "heading_font": "Playfair Display / Cormorant Garamond / Serif (imported via Google Fonts)",
+    "body_font": "Plus Jakarta Sans / Manrope / Inter (clean modern sans-serif)",
+    "accent_mono_font": "JetBrains Mono (for trip codes, coordinates, dates, and fine labels)",
+    "font_loading_instructions": "Import Google Fonts ('Playfair Display:ital,wght@0,400..900;1,400..900', 'Plus Jakarta Sans:wght@300;400;500;600;700', 'JetBrains Mono:wght@400;500') in src/index.css or public/index.html",
+    "hierarchy": {
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-serif font-medium tracking-tight leading-[1.1]",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-serif font-semibold tracking-tight text-[#1C1E1D]",
+      "h3_card_title": "text-xl sm:text-2xl font-serif font-medium text-[#1C1E1D]",
+      "body_lead": "text-lg sm:text-xl font-sans text-[#4A4E4B] leading-relaxed font-light",
+      "body_regular": "text-base font-sans text-[#2D312E] leading-relaxed",
+      "caption_overline": "text-xs font-mono uppercase tracking-[0.25em] text-[#2A4038] font-semibold"
+    },
+    "rules": [
+      "NEVER use Inter or generic sans for major headings — use Playfair Display or Cormorant Garamond.",
+      "Headings max out at text-6xl (never use text-8xl or text-9xl).",
+      "Use font-light or font-medium on large serif headings for an editorial magazine feel.",
+      "Uppercase overlines MUST have generous tracking (tracking-[0.2em] or tracking-[0.25em])."
+    ]
+  },
+  "colors": {
+    "palette_name": "Organic Earthy & Tuscan Luxury",
+    "background_main": "#FDFBF7",
+    "background_secondary": "#F5F2EC",
+    "surface_card": "#FFFFFF",
+    "surface_muted": "#EFECE6",
+    "text_primary": "#1C1E1D",
+    "text_secondary": "#4A4E4B",
+    "text_muted": "#767B78",
+    "primary_brand": "#2A4038",
+    "primary_brand_hover": "#1E2F28",
+    "accent_warm": "#C86D51",
+    "accent_warm_hover": "#B0593B",
+    "accent_gold": "#D4A359",
+    "border_light": "rgba(42, 64, 56, 0.12)",
+    "border_card": "#E2DDD5",
+    "overlay_dark_hero": "bg-gradient-to-t from-black/70 via-black/35 to-black/20",
+    "dark_mode_support": {
+      "bg_dark": "#121614",
+      "card_dark": "#1C211E",
+      "text_dark_primary": "#F2EFEA",
+      "text_dark_muted": "#9BA09C"
+    },
+    "forbidden_colors": [
+      "#7351B7 (Forbidden AI Purple)",
+      "#1B93A4 (Forbidden Teal Blue)",
+      "Pure #000000 black background",
+      "Extremely saturated neon blues or pinks"
+    ]
+  },
+  "spacing_and_layout": {
+    "spacing_philosophy": "Generous Spacing (2x-3x typical SaaS spacing). Use py-20, py-28, py-32 for section padding.",
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "bento_grid_mode_a": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-6 lg:gap-8",
+    "bento_span_hero": "col-span-12 md:col-span-8 row-span-2",
+    "bento_span_card": "col-span-12 md:col-span-4",
+    "padding_rules": "All bordered cards must have internal padding (p-6 or p-8) to prevent text touching borders.",
+    "border_radius": "rounded-2xl for main cards, rounded-full for pills and tags, rounded-3xl for hero containers"
+  },
+  "navigation_and_header": {
+    "header_style": "Sticky top-0 z-50 backdrop-blur-md bg-[#FDFBF7]/90 border-b border-[#E2DDD5]/80 transition-all duration-300",
+    "rule_no_transparent": "NEVER use a 100% transparent header without blur/background when content scrolls underneath.",
+    "links": ["Destinations", "Trips & Experiences", "Offers", "Travel Journal", "About Us", "Contact"],
+    "ctas": ["Plan My Trip", "Sign In / Dashboard"]
+  },
+  "components_and_interactions": {
+    "hero_section": "Cinematic high-resolution background photo with subtle gradient overlay, editorial display title, pill badge, search bar widget, and micro trust badges.",
+    "trip_planner_widget": "Floating tabbed search bar (Destination, Experience Type, Month/Season, Budget) with autocomplete and direct search action.",
+    "destination_cards": "Aspect-ratio 4/5 or 3/4 cards with smooth image hover zoom (scale-105 duration-700), subtle price tags, duration badges, and heart bookmark toggle.",
+    "travel_experience_categories": "Horizontal scrollable or bento gallery (Beach & Escapes, Cultural Journeys, Alpine & Adventure, Safari & Wildlife, Food & Wine, Solo Discoveries).",
+    "why_choose_us": "4-column trust feature grid (Curated Excellence, 24/7 UK Support, ATOL/Financial Protection, Best Rate Guarantee) with bespoke icons and numbers.",
+    "featured_offer_promo": "Split-layout high-impact offer card with countdown, percentage savings tag, exclusive perks bullet list, and direct 'Claim Offer' modal trigger.",
+    "testimonials_carousel": "Editorial quote style with authentic user photos, star rating, verified traveler tag, and departure city (e.g., London, Manchester).",
+    "newsletter_crm": "High-conversion Travel Club signup form with email input, preference tags (e.g., Luxury, Budget, Family), and instant success feedback toast.",
+    "footer": "5-column comprehensive footer with Brand Bio, Navigation, Popular Destinations, Legal/ATOL trust badges, Currency/Language selector, and 'Follow the Journey' social grid."
+  },
+  "media_and_image_urls": {
+    "hero_images": [
+      {
+        "url": "https://images.unsplash.com/photo-1561956021-947f09ae0101?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Positano Amalfi Coast Italy cliffside village overlooking turquoise sea",
+        "use_case": "Main Hero Background / Featured Destination"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Santorini Greece white clifftop buildings at golden hour",
+        "use_case": "Hero Carousel / Mediterranean Escapes"
+      }
+    ],
+    "destination_photography": [
+      {
+        "id": "amalfi",
+        "name": "Amalfi Coast & Positano, Italy",
+        "price": "From £899 pp",
+        "duration": "7 Nights",
+        "category": "Coastal & Luxury",
+        "url": "https://images.unsplash.com/photo-1561956021-947f09ae0101?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      {
+        "id": "kyoto",
+        "name": "Kyoto & Historic Japan",
+        "price": "From £1,499 pp",
+        "duration": "10 Nights",
+        "category": "Cultural Journeys",
+        "url": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      {
+        "id": "safari",
+        "name": "Serengeti & Masai Mara Safari",
+        "price": "From £2,199 pp",
+        "duration": "8 Nights",
+        "category": "Safari & Wildlife",
+        "url": "https://images.pexels.com/photos/19281386/pexels-photo-19281386.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+      },
+      {
+        "id": "swiss_alps",
+        "name": "Swiss Alps & Zermatt Chalets",
+        "price": "From £1,120 pp",
+        "duration": "5 Nights",
+        "category": "Alpine & Wellness",
+        "url": "https://images.unsplash.com/photo-1607585011081-241d2bacb7de?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      {
+        "id": "santorini",
+        "name": "Santorini Sunset Villas, Greece",
+        "price": "From £749 pp",
+        "duration": "6 Nights",
+        "category": "Romantic Escapes",
+        "url": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      {
+        "id": "paris",
+        "name": "Parisian Art & Gastronomy, France",
+        "price": "From £450 pp",
+        "duration": "3 Nights",
+        "category": "City Breaks",
+        "url": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      {
+        "id": "iceland",
+        "name": "Iceland Waterfalls & Northern Lights",
+        "price": "From £820 pp",
+        "duration": "5 Nights",
+        "category": "Adventure",
+        "url": "https://images.unsplash.com/photo-1501908734255-16579c18c25f?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      {
+        "id": "bali",
+        "name": "Ubud Eco Resort & Terraces, Bali",
+        "price": "From £1,050 pp",
+        "duration": "9 Nights",
+        "category": "Tropical & Wellness",
+        "url": "https://images.unsplash.com/photo-1555400038-63f5ba517a47?crop=entropy&cs=srgb&fm=jpg&q=85"
+      }
+    ],
+    "hotel_and_lifestyle": [
+      "https://images.unsplash.com/photo-1582533401888-825fb21aedf1?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1549294413-26f195200c16?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1561501900-3701fa6a0864?crop=entropy&cs=srgb&fm=jpg&q=85"
+    ]
+  },
+  "motion_and_animations": {
+    "library": "framer-motion + Lenis smooth scroll",
+    "hover_transitions": "transition-transform duration-500 ease-out hover:-translate-y-1 hover:shadow-xl",
+    "image_zoom_hover": "transition-transform duration-700 ease-out group-hover:scale-105",
+    "page_transitions": "AnimatePresence with opacity 0 to 1 and slight y slide",
+    "accessibility_motion": "Respect prefers-reduced-motion in Framer Motion variants"
+  },
+  "component_structure": {
+    "pages": [
+      "src/pages/HomePage.js",
+      "src/pages/DestinationsPage.js",
+      "src/pages/DestinationDetailPage.js",
+      "src/pages/TripsPage.js",
+      "src/pages/OffersPage.js",
+      "src/pages/BlogPage.js",
+      "src/pages/BlogArticlePage.js",
+      "src/pages/AboutPage.js",
+      "src/pages/ContactPage.js",
+      "src/pages/DashboardPage.js"
+    ],
+    "components": [
+      "src/components/layout/Navbar.js",
+      "src/components/layout/Footer.js",
+      "src/components/home/Hero.js",
+      "src/components/home/TripPlannerWidget.js",
+      "src/components/home/DestinationsGrid.js",
+      "src/components/home/ExperienceCategories.js",
+      "src/components/home/WhyChooseUs.js",
+      "src/components/home/FeaturedOffer.js",
+      "src/components/home/Testimonials.js",
+      "src/components/home/NewsletterSection.js",
+      "src/components/home/SocialGallery.js",
+      "src/components/ui/TripBookingModal.js"
+    ]
+  },
+  "testing_and_data_ids": {
+    "rule": "ALL interactive elements (buttons, links, inputs, cards, dropdowns, filters, tabs) MUST include data-testid.",
+    "examples": [
+      "data-testid=\"nav-link-destinations\"",
+      "data-testid=\"hero-cta-plan-trip\"",
+      "data-testid=\"trip-planner-search-btn\"",
+      "data-testid=\"destination-card-amalfi\"",
+      "data-testid=\"filter-category-luxury\"",
+      "data-testid=\"newsletter-email-input\"",
+      "data-testid=\"newsletter-submit-btn\"",
+      "data-testid=\"dashboard-saved-trips-tab\""
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build a complete, multi-page interactive React frontend with seamless client-side routing (React Router) and local storage state persistence.",
+    "Implement the customer dashboard with My Trips, Saved Destinations, Saved Offers, Travel Preferences, and Account Settings.",
+    "Ensure every single CTA (Plan My Trip, Explore Destinations, Find Your Escape, Join the Travel Club, Request a Quote) opens an interactive modal or navigates to the relevant flow.",
+    "Apply Sonner toasts for form submissions, booking requests, newsletter signups, and item bookmarking.",
+    "Ensure total compliance with data-testid on every interactive element."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Do NOT make generic SaaS/dashboard layouts. Maintain the warm editorial travel magazine aesthetic throughout.",
+    "Never use dark blue gradients or generic AI-slop colors.",
+    "Use 2x-3x generous spacing between cards and sections.",
+    "Always set explicit hover text colors and transitions."
+  ]
+}

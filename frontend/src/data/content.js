@@ -1,0 +1,341 @@
+// Central static content for VOYARA TRAVEL (destinations, experiences, offers, testimonials, FAQs).
+// Blog articles come from the backend CMS.
+
+export const DESTINATIONS = [
+  {
+    id: "santorini",
+    name: "Santorini",
+    country: "Greece",
+    region: "Europe",
+    image: "https://images.unsplash.com/photo-1672622851784-0dbd3df4c088?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 599,
+    duration: "4-7 nights",
+    tripTypes: ["Romantic Escape", "Luxury", "Beach Holiday"],
+    bestFor: "Couples, honeymoons & sunset lovers",
+    short: "Whitewashed villages, caldera views and the most celebrated sunsets in the Aegean.",
+    long: "Perched on the rim of a sunken volcano, Santorini is the Mediterranean at its most cinematic. Spend lazy mornings in blue-domed Oia, afternoons swimming from black-sand beaches and evenings watching the sky turn gold over the caldera. Our villas are hand-selected for their views and privacy.",
+    highlights: ["Private caldera-view suite", "Sunset catamaran cruise", "Wine tasting in Megalochori", "Oia & Fira walking tour"],
+  },
+  {
+    id: "paris",
+    name: "Paris",
+    country: "France",
+    region: "Europe",
+    image: "https://images.unsplash.com/photo-1549144511-f099e773c147?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 299,
+    duration: "2-4 nights",
+    tripTypes: ["City Break", "Romantic Escape", "Luxury"],
+    bestFor: "City breaks, art & gastronomy",
+    short: "Grand boulevards, world-class museums and a cafe culture built for lingering.",
+    long: "Paris rewards slow, stylish days. Wander the Marais, picnic beneath the Eiffel Tower, lose an afternoon in the Louvre and end each evening with a long dinner. We pair central boutique hotels with skip-the-line access and insider dining reservations.",
+    highlights: ["Boutique hotel in the Marais", "Skip-the-line Louvre entry", "Seine evening cruise", "Montmartre food walk"],
+  },
+  {
+    id: "rome",
+    name: "Rome",
+    country: "Italy",
+    region: "Europe",
+    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 329,
+    duration: "3-5 nights",
+    tripTypes: ["City Break", "Family Holiday", "Luxury"],
+    bestFor: "History, food & lively piazzas",
+    short: "Ancient wonders around every corner and arguably Europe's best-value dining.",
+    long: "Rome is layered chaos in the best possible way. Touch two thousand years of history at the Colosseum and Forum, toss a coin in the Trevi, then settle into a trattoria for cacio e pepe as the piazzas come alive. A city that is impossible not to love.",
+    highlights: ["Colosseum & Forum guided tour", "Vatican early-access visit", "Trastevere food evening", "Central 4-star stay"],
+  },
+  {
+    id: "barcelona",
+    name: "Barcelona",
+    country: "Spain",
+    region: "Europe",
+    image: "https://images.unsplash.com/photo-1579282240050-352db0a14c21?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 279,
+    duration: "3-4 nights",
+    tripTypes: ["City Break", "Beach Holiday", "Family Holiday"],
+    bestFor: "Architecture, beaches & tapas",
+    short: "Gaudi's dreamlike architecture and golden beaches within a single metro ride.",
+    long: "Few cities blend culture and coast like Barcelona. Marvel at the Sagrada Familia, stroll Las Ramblas, graze your way through La Boqueria, then cool off on the Barceloneta sand. Evenings belong to tapas and vermut in the Gothic Quarter.",
+    highlights: ["Sagrada Familia entry", "Gothic Quarter tapas crawl", "Park Guell visit", "Beachfront aparthotel"],
+  },
+  {
+    id: "dubai",
+    name: "Dubai",
+    country: "UAE",
+    region: "Middle East",
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 899,
+    duration: "5-7 nights",
+    tripTypes: ["Luxury", "Family Holiday", "Beach Holiday"],
+    bestFor: "Luxury, winter sun & families",
+    short: "Record-breaking skylines, desert adventures and five-star beach resorts.",
+    long: "Dubai is a modern marvel of sky-high ambition and desert serenity. Ascend the Burj Khalifa, dune-bash at sunset, shop the souks and unwind at a beachfront resort. Reliable winter sun makes it a favourite festive escape.",
+    highlights: ["Burj Khalifa observation deck", "Desert safari with dinner", "Beachfront 5-star resort", "Old Dubai & souk tour"],
+  },
+  {
+    id: "new-york",
+    name: "New York",
+    country: "USA",
+    region: "North America",
+    image: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 749,
+    duration: "4-6 nights",
+    tripTypes: ["City Break", "Luxury", "Family Holiday"],
+    bestFor: "Iconic city breaks & shopping",
+    short: "The city that never sleeps: Broadway, skylines, Central Park and endless energy.",
+    long: "There is nowhere quite like New York. Catch a Broadway show, walk the High Line, picnic in Central Park and watch the skyline glow from a rooftop bar. From Fifth Avenue shopping to Brooklyn's food scene, the city rewards the curious.",
+    highlights: ["Midtown boutique hotel", "Empire State observatory", "Broadway show tickets", "Downtown & Brooklyn food tour"],
+  },
+  {
+    id: "lisbon",
+    name: "Lisbon",
+    country: "Portugal",
+    region: "Europe",
+    image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 249,
+    duration: "2-4 nights",
+    tripTypes: ["City Break", "Beach Holiday", "Solo Travel"],
+    bestFor: "City breaks, food lovers & weekend escapes",
+    short: "Pastel streets, golden light and tram rides through one of Europe's friendliest capitals.",
+    long: "Lisbon is sunshine, soul and surprisingly good value. Ride the rattling 28 tram through Alfama, feast on pastel de nata in Belem, catch fado in a candlelit tavern and watch the sun drop from a hilltop miradouro. A perfect long-weekend city.",
+    highlights: ["Alfama & tram 28 tour", "Belem pastry tasting", "Fado dinner evening", "Rooftop sunset viewpoint"],
+  },
+  {
+    id: "bali",
+    name: "Bali",
+    country: "Indonesia",
+    region: "Asia",
+    image: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    price: 1050,
+    duration: "9-12 nights",
+    tripTypes: ["Adventure", "Romantic Escape", "Luxury", "Solo Travel"],
+    bestFor: "Wellness, nature & long-haul escapes",
+    short: "Emerald rice terraces, temple-dotted hills and barefoot luxury in the Island of the Gods.",
+    long: "Bali balances adventure and serenity like nowhere else. Trek through Ubud's rice terraces, greet dawn at a hilltop temple, surf the southern breaks and then retreat to a jungle eco-resort for yoga and spa days. A restorative long-haul favourite.",
+    highlights: ["Ubud jungle eco-resort", "Rice terrace & temple tour", "Sunrise volcano trek", "Balinese spa & wellness day"],
+  },
+];
+
+export const REGIONS = ["Europe", "Asia", "Middle East", "North America", "Caribbean", "Africa"];
+export const TRIP_TYPES = ["City Break", "Beach Holiday", "Adventure", "Romantic Escape", "Family Holiday", "Luxury", "Solo Travel"];
+export const BUDGETS = ["Up to £300", "£300 - £600", "£600 - £1000", "£1000+"];
+export const DURATIONS = ["2-4 nights", "5-7 nights", "8+ nights"];
+
+export const EXPERIENCES = [
+  {
+    id: "city-escapes",
+    title: "City Escapes",
+    image: "https://images.unsplash.com/photo-1549144511-f099e773c147?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "2-4 nights",
+    price: 249,
+    short: "Culture, cuisine and discovery packed into an unforgettable weekend.",
+    description: "Our city breaks pair central, characterful hotels with insider access so you spend less time planning and more time exploring. Perfect for couples, friends and first-time solo travellers.",
+    highlights: ["Handpicked central hotels", "Skip-the-line attractions", "Local food experiences", "Flexible 2-4 night stays"],
+  },
+  {
+    id: "beach-holidays",
+    title: "Beach Escapes",
+    image: "https://images.unsplash.com/photo-1603477849227-705c424d1d80?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "5-10 nights",
+    price: 549,
+    short: "Turquoise water, soft sand and resorts chosen for pure relaxation.",
+    description: "From the Greek islands to the Indian Ocean, our beach escapes are built around the kind of resort you won't want to leave. Think swim-up suites, long lunches and sunsets on repeat.",
+    highlights: ["Beachfront & overwater resorts", "Half-board & all-inclusive options", "Spa & wellness add-ons", "Family-friendly choices"],
+  },
+  {
+    id: "adventure",
+    title: "Adventure Trips",
+    image: "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "5-9 nights",
+    price: 820,
+    short: "Trek, paddle and explore spectacular landscapes with expert guides.",
+    description: "For travellers who'd rather swap the sun lounger for a summit. Guided treks, fjord kayaking and desert expeditions designed to push you just far enough outside your comfort zone.",
+    highlights: ["Expert local guides", "Small-group departures", "All equipment arranged", "Routes for every fitness level"],
+  },
+  {
+    id: "romantic-getaways",
+    title: "Romantic Getaways",
+    image: "https://images.unsplash.com/photo-1513279922550-250c2129b13a?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "3-7 nights",
+    price: 599,
+    short: "Candlelit cities and private sunsets designed for two.",
+    description: "Whether it's a honeymoon, anniversary or a just-because escape, our romantic getaways add thoughtful touches: room upgrades, private dinners and unhurried itineraries with nowhere to be.",
+    highlights: ["Suite upgrades where available", "Private dining experiences", "Couples spa treatments", "Unhurried bespoke itineraries"],
+  },
+  {
+    id: "luxury-travel",
+    title: "Luxury Experiences",
+    image: "https://images.unsplash.com/photo-1543489822-c49534f3271f?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "5-14 nights",
+    price: 1499,
+    short: "Five-star stays, private transfers and effortless, elevated travel.",
+    description: "Travel without a single detail left to chance. Our luxury collection features the world's finest hotels, private guides, seamless transfers and a dedicated specialist on call throughout your trip.",
+    highlights: ["World's finest hotels", "Private transfers & guides", "Dedicated trip concierge", "Exclusive member rates"],
+  },
+  {
+    id: "family-adventures",
+    title: "Family Holidays",
+    image: "https://images.unsplash.com/photo-1475503572774-15a45e5d60b9?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "5-10 nights",
+    price: 699,
+    short: "Stress-free escapes the whole family will remember.",
+    description: "We take the stress out of family travel with resorts that genuinely cater to all ages, connecting rooms, kids' clubs and itineraries that balance downtime with adventure for everyone.",
+    highlights: ["Kids' clubs & family rooms", "Flexible dining options", "Age-appropriate activities", "Trusted family resorts"],
+  },
+];
+
+export const OFFERS = [
+  {
+    id: "santorini-escape",
+    destination: "Santorini, Greece",
+    title: "Escape to Santorini",
+    image: "https://images.unsplash.com/photo-1672622851784-0dbd3df4c088?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "4 nights",
+    price: 599,
+    tag: "Featured",
+    includes: ["Caldera-view suite", "Daily breakfast", "Airport transfers", "Sunset cruise"],
+    blurb: "Four nights in a hand-selected caldera-view suite with a private sunset cruise included.",
+  },
+  {
+    id: "barcelona-weekend",
+    destination: "Barcelona, Spain",
+    title: "Barcelona Weekend Escape",
+    image: "https://images.unsplash.com/photo-1579282240050-352db0a14c21?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "3 nights",
+    price: 349,
+    tag: "Weekend",
+    includes: ["Central 4-star hotel", "Daily breakfast", "Sagrada Familia entry", "City map & guide"],
+    blurb: "Three nights in the heart of the city with Sagrada Familia tickets included.",
+  },
+  {
+    id: "greek-island",
+    destination: "Greek Islands",
+    title: "Greek Island Escape",
+    image: "https://images.unsplash.com/photo-1790095387955-c5362eea50fa?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "7 nights",
+    price: 699,
+    tag: "Early booking",
+    includes: ["Island-hopping ferries", "Boutique stays", "Daily breakfast", "Welcome dinner"],
+    blurb: "Seven nights hopping between three islands with ferries and boutique stays arranged.",
+  },
+  {
+    id: "dubai-experience",
+    destination: "Dubai, UAE",
+    title: "Dubai Experience",
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "5 nights",
+    price: 899,
+    tag: "Luxury",
+    includes: ["Beachfront 5-star resort", "Half board", "Desert safari", "Private transfers"],
+    blurb: "Five nights of winter sun at a beachfront resort with a desert safari included.",
+  },
+  {
+    id: "lisbon-city",
+    destination: "Lisbon, Portugal",
+    title: "Lisbon City Break",
+    image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "3 nights",
+    price: 299,
+    tag: "Seasonal",
+    includes: ["Boutique city hotel", "Daily breakfast", "Tram 28 pass", "Pastry tasting"],
+    blurb: "A long weekend in Portugal's sunniest capital, pastries and tram rides included.",
+  },
+  {
+    id: "bali-wellness",
+    destination: "Ubud, Bali",
+    title: "Bali Wellness Retreat",
+    image: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200",
+    duration: "9 nights",
+    price: 1050,
+    tag: "Long haul",
+    includes: ["Jungle eco-resort", "Daily breakfast & yoga", "Spa credit", "Airport transfers"],
+    blurb: "Nine restorative nights in an Ubud eco-resort with daily yoga and a spa credit.",
+  },
+];
+
+export const TESTIMONIALS = [
+  {
+    name: "Sophie",
+    location: "London",
+    rating: 5,
+    trip: "Italy City Break",
+    destination: "Rome",
+    review: "VOYARA made planning our first trip to Italy incredibly easy. Everything felt personalised rather than generic, right down to the dinner reservations.",
+  },
+  {
+    name: "Daniel",
+    location: "Manchester",
+    rating: 5,
+    trip: "Rome City Break",
+    destination: "Rome",
+    review: "Excellent service from start to finish. The recommendations felt tailored to us rather than copied from a generic travel website.",
+  },
+  {
+    name: "Aisha",
+    location: "Birmingham",
+    rating: 5,
+    trip: "Santorini Honeymoon",
+    destination: "Santorini",
+    review: "Our honeymoon was flawless. The caldera suite they chose for us was beyond anything we could have found ourselves. Worth every penny.",
+  },
+  {
+    name: "Tom & Katie",
+    location: "Bristol",
+    rating: 5,
+    trip: "Barcelona Weekend",
+    destination: "Barcelona",
+    review: "A proper weekend away without any of the stress. We just turned up and everything worked. We've already booked our next trip with them.",
+  },
+  {
+    name: "Priya",
+    location: "London",
+    rating: 5,
+    trip: "Solo Bali Retreat",
+    destination: "Bali",
+    review: "As a solo traveller I felt looked after the entire time. The team checked in, the resort was perfect and I never once felt alone.",
+  },
+  {
+    name: "James",
+    location: "Edinburgh",
+    rating: 4,
+    trip: "Dubai Family Holiday",
+    destination: "Dubai",
+    review: "Brilliant family trip. The kids loved the resort and the desert safari was a highlight. Easy to book and great value for a five-star stay.",
+  },
+];
+
+export const FAQS = [
+  { q: "Can you customise my trip?", a: "Absolutely. Every VOYARA itinerary is built around how you like to travel. Tell us your dates, budget and the kind of experience you're after, and a specialist will tailor each element, from hotels to day trips, to suit you." },
+  { q: "How do I request a quote?", a: "Use our Plan My Trip planner or the Contact page enquiry form. Share a few details and one of our travel specialists will come back to you with personalised options, usually within 24 hours." },
+  { q: "Can I change my travel dates?", a: "In most cases, yes. Flexibility depends on the specific hotels and fares in your itinerary, but your dedicated specialist will always explain your options clearly before you book and help with any changes afterwards." },
+  { q: "Do you arrange flights and accommodation?", a: "We can arrange your complete trip, including accommodation, transfers, experiences and flights, or just the elements you'd like help with. It's entirely up to you." },
+  { q: "How does the planning process work?", a: "It's four simple steps: tell us what you want, discover the options we curate for you, personalise the details together, then start your journey with our UK team on hand throughout." },
+  { q: "Is my booking financially protected?", a: "Yes. VOYARA trips are arranged with your financial protection in mind, and we provide clear, transparent pricing with no hidden costs before you commit to anything." },
+];
+
+export const SOCIAL_GALLERY = [
+  "https://images.unsplash.com/photo-1633321088768-b994237c8aa8?crop=entropy&cs=srgb&fm=jpg&q=85&w=600",
+  "https://images.unsplash.com/photo-1603477849227-705c424d1d80?crop=entropy&cs=srgb&fm=jpg&q=85&w=600",
+  "https://images.unsplash.com/photo-1672622851784-0dbd3df4c088?crop=entropy&cs=srgb&fm=jpg&q=85&w=600",
+  "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?crop=entropy&cs=srgb&fm=jpg&q=85&w=600",
+  "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?crop=entropy&cs=srgb&fm=jpg&q=85&w=600",
+  "https://images.unsplash.com/photo-1555400038-63f5ba517a47?crop=entropy&cs=srgb&fm=jpg&q=85&w=600",
+];
+
+export const TEAM = [
+  { name: "Elena Marsh", role: "Founder & Head of Travel", image: "https://images.unsplash.com/photo-1758691736975-9f7f643d178e?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" },
+  { name: "Marco Bellini", role: "Europe Specialist", image: "https://images.unsplash.com/photo-1758518731468-98e90ffd7430?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" },
+];
+
+export function priceLabel(n) {
+  return `From £${n.toLocaleString("en-GB")}`;
+}
+
+export function budgetMatch(price, budget) {
+  if (!budget) return true;
+  if (budget === "Up to £300") return price <= 300;
+  if (budget === "£300 - £600") return price > 300 && price <= 600;
+  if (budget === "£600 - £1000") return price > 600 && price <= 1000;
+  if (budget === "£1000+") return price > 1000;
+  return true;
+}
