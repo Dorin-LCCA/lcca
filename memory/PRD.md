@@ -33,8 +33,17 @@ Awareness (hero/blog/social) → explore destinations/experiences → trust (why
 - SEO (per-page titles/meta/H1), accessibility (labels, focus states, semantic HTML), analytics event tracking across CTAs/forms/views, responsive + mobile hamburger.
 - Legal pages (terms/privacy/cookies), 404.
 
+## Iteration 2 (2026-06) — Rebrand + 3 features
+- **Global rebrand VOYARA → DORIN TRAVEL**: every source file, public HTML title/meta, DB blog articles, admin/CRM, and seed data. Infra URLs left untouched. Tagline unchanged.
+- **Google-only auth** (Emergent-managed OAuth): replaced JWT email/password entirely. `/api/auth/session` exchanges X-Session-ID → httpOnly `session_token` cookie (7d). Admin = ADMIN_EMAIL (spinudorin10@gmail.com), auto role on login. Frontend: loginWithGoogle redirect + AuthCallback hash handler; /login & /signup are one-tap Google screens.
+- **Email automation** (Emergent Resend): welcome email on first login; enquiry/contact confirmation emails. Guardrail gate + server-side templates; from_name "DORIN TRAVEL". Verified 202 from proxy.
+- **Blog editor** (admin CMS): full create/edit/delete in /admin "Blog editor" tab → `POST/PUT/DELETE /api/blog`, `GET /api/admin/blog`. New articles appear instantly on public /blog.
+
 ## Mocked / Simulated
-- "Continue with Google" and "Forgot password" are simulated (toast only) — no real OAuth/email sending.
+- None. (Earlier simulated Google/forgot-password removed — Google OAuth is now real.)
+
+## Notes
+- Email proxy accepts real/`delivered@resend.dev` recipients; arbitrary throwaway test addresses return 422 (expected sandbox behavior), lead still saved.
 
 ## Backlog (P1/P2)
 - P1: Wire Google OAuth (Emergent-managed) and real password-reset emails (Resend).
