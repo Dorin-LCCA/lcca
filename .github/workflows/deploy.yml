@@ -1,0 +1,67 @@
+name: Deploy Dorin Travel to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; cancel in-progress runs on new pushes.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install dependencies (reproducible)
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        env:
+          # Served from the repository subpath https://<user>.github.io/lcca/
+          PUBLIC_URL: /lcca
+          CI: "false" # treat CRA warnings as warnings, not build-breaking errors
+          DISABLE_EMERGENT_OVERLAY: "true"
+        run: yarn build
+
+      - name: Verify build output
+        run: |
+          test -f build/index.html || (echo "Missing build/index.html" && exit 1)
+          test -f build/404.html || (echo "Missing build/404.html" && exit 1)
+          test -d build/static || (echo "Missing build/static" && exit 1)
+          echo "Build output verified."
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
