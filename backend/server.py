@@ -574,12 +574,23 @@ async def analytics_summary(_: dict = Depends(require_admin)):
 # ----------------------------------------------------------------------------
 app.include_router(api_router)
 
+# CORS: explicit allow-list (never "*" with credentials). Origins come from
+# CORS_ORIGINS (comma-separated). Empty/whitespace entries are dropped.
+_raw_origins = os.environ.get("CORS_ORIGINS", "")
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip() and o.strip() != "*"]
+if not _allowed_origins:
+    # Safe fallback for local dev only; production must set CORS_ORIGINS explicitly.
+    _allowed_origins = ["http://localhost:3000"]
+logger.info(f"CORS allow-list: {_allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=_allowed_origins,
     allow_credentials=True,
-    allow_origins=[o.strip() for o in os.environ.get('CORS_ORIGINS', '*').split(',')],
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 
