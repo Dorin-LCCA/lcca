@@ -324,7 +324,7 @@ export const SOCIAL_GALLERY = [
 
 export const TEAM = [
   { name: "Dorin Spinu", role: "Founder & Head of Travel", image: "https://customer-assets-m6fa6gv7.emergentagent.net/job_travel-voyara-demo/artifacts/66b987b95bf886e9_IMAGE%202026-10-10%2010%3A36%3A37.jpg" },
-  { name: "Marco Bellini", role: "Europe Specialist", image: "https://images.unsplash.com/photo-1758518731468-98e90ffd7430?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" },
+  { name: "Alexander Moretti", role: "Europe Specialist", image: "https://customer-assets-m6fa6gv7.emergentagent.net/job_travel-voyara-demo/artifacts/55bab4ab6a7950aa_%D0%AD%D0%BA%D1%81%D0%BF%D0%B5%D1%80%D1%82%20%D0%BF%D0%BE%20%D0%BF%D1%83%D1%82%D0%B5%D1%88%D0%B5%D1%81%D1%82%D0%B2%D0%B8%D1%8F%D0%BC%20%D0%B2%20%D1%81%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%BE%D0%BC%20%D0%BE%D1%84%D0%B8%D1%81%D0%B5.png" },
 ];
 
 export function priceLabel(n) {
