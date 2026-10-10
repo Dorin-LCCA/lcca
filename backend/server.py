@@ -740,6 +740,42 @@ BLOG_SEED = [
         "author": "Sophie Laurent", "read_time": "7 min read", "date": "2026-05-06",
         "content": "After months of wedding planning, the honeymoon should feel like a reward, not another spreadsheet. The first step is an honest conversation about what you both actually want: adventure or total rest, one dreamy destination or a mix of beach and culture.\n\nAgree a realistic budget early and decide where to splurge, often the accommodation or one standout experience, and where to keep things simple. Travelling in shoulder season stretches that budget further and means fewer crowds for those once-in-a-lifetime moments. Consider a honeymoon fund in place of traditional wedding gifts.\n\nThis is the trip to let a specialist carry the load. Room upgrades, a surprise private dinner, seamless transfers and a single point of contact mean you simply arrive and relax. Our couples tell us the same thing afterwards: the best honeymoon memory was having nothing to organise and nowhere to be.",
     },
+    {
+        "slug": "first-timers-guide-to-tokyo",
+        "title": "A First-Timer's Guide to Tokyo",
+        "category": "Travel Guides",
+        "excerpt": "Jet-lagged and wide-eyed in the world's most exciting megacity? Here is how to make your first trip to Tokyo feel effortless.",
+        "image": "https://images.unsplash.com/photo-1682985942242-31413035c2db?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
+        "author": "Priya Nair", "read_time": "8 min read", "date": "2026-06-09",
+        "content": "Tokyo can feel overwhelming on paper and surprisingly easy in person. The secret is to pick a few neighbourhoods and go deep rather than trying to see everything. Base yourself near a major station such as Shinjuku or Tokyo Station and the whole city opens up via one of the best transit systems on earth.\n\nStart gently: a morning at the Meiji Shrine, the buzz of Harajuku, then the view from a free observation deck as the sun sets. Give yourself a full day for the contrast of old and new, the temples of Asakusa in the morning and the neon of Shibuya at night. Eat fearlessly, from conveyor-belt sushi to a bowl of ramen ordered from a vending machine.\n\nGet a prepaid transit card on arrival, carry a little cash, and download an offline map. Bow, queue and keep your voice low on trains and you will fit right in. Two things surprise every first-timer: how spotless and safe it feels, and how quickly you start planning your return.",
+    },
+    {
+        "slug": "chasing-the-northern-lights",
+        "title": "Chasing the Northern Lights: When and Where to See Them",
+        "category": "Destination Inspiration",
+        "excerpt": "The aurora is nature's greatest show, and seeing it is easier than you think with a little planning and a lot of patience.",
+        "image": "https://images.unsplash.com/photo-1589311836849-4cec35b363cb?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
+        "author": "Daniel Osei", "read_time": "6 min read", "date": "2026-06-02",
+        "content": "Seeing the Northern Lights for the first time is a genuinely emotional experience, and it tops more bucket lists than almost anything else we plan. The good news is that it is far more achievable than most people realise.\n\nTiming is everything. The season runs roughly from late September to early April, when the nights are long and dark. You need three things to line up: darkness, clear skies and solar activity. That means heading well away from city lights and giving yourself several nights to improve your odds. Iceland, Norwegian Lapland, northern Finland and Sweden are all superb bases.\n\nDress far warmer than you think you need to, download an aurora forecast app, and build the trip around other winter magic, dog-sledding, geothermal spas and snowy landscapes, so the holiday delivers even on a cloudy night. When the sky finally erupts in green and violet, you will understand why people travel across the world to chase it.",
+    },
+    {
+        "slug": "best-european-christmas-markets",
+        "title": "The Best European Christmas Markets",
+        "category": "City Breaks",
+        "excerpt": "Mulled wine, twinkling lights and handmade gifts. These festive markets turn a winter weekend into pure magic.",
+        "image": "https://images.unsplash.com/photo-1573599852326-2d4da0bbe613?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
+        "author": "Elena Marsh", "read_time": "7 min read", "date": "2026-05-26",
+        "content": "There is no better excuse for a winter city break than Europe's Christmas markets. From late November, historic squares fill with wooden chalets, the smell of roasting chestnuts and the warm glow of thousands of lights.\n\nVienna is the grande dame, with markets set against imperial palaces and some of the best mulled wine anywhere. Prague's Old Town Square is pure fairytale, while the markets of Germany, Nuremberg, Cologne and Dresden, are the atmospheric originals. For something smaller and serene, the Alpine towns of Austria and Switzerland are hard to beat.\n\nGo midweek to avoid the biggest crowds, take a reusable cup for your gluhwein, and pack properly for the cold. Beyond the stalls, these are wonderful cities in their own right, so pair the market magic with a museum, a concert and a long, candlelit dinner. It is the cosiest trip of the year.",
+    },
+    {
+        "slug": "why-cape-town-next-big-trip",
+        "title": "Why Cape Town Should Be Your Next Big Trip",
+        "category": "Destination Inspiration",
+        "excerpt": "Mountains, beaches, wine and wildlife in one unforgettable city. Here is why Cape Town belongs at the top of your list.",
+        "image": "https://images.unsplash.com/photo-1740021028768-94a74d275f5b?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400",
+        "author": "The DORIN Team", "read_time": "7 min read", "date": "2026-05-18",
+        "content": "Few destinations pack as much into one trip as Cape Town. In a single day you can ride the cable car up Table Mountain, swim at a white-sand beach and watch the sun drop behind the Twelve Apostles with a glass of local wine in hand.\n\nThe variety is the magic. Drive the spectacular Cape Peninsula to Boulders Beach to meet a colony of penguins, spend a day tasting your way through the Stellenbosch and Franschhoek Winelands, and dive into a food and design scene that rivals any world city. Best of all, it pairs beautifully with a safari, so you can add a few nights in the bush before or after.\n\nThe favourable exchange rate makes luxury surprisingly attainable, and the long-haul flight is easier than many expect with minimal time difference. Go for the mountain, stay for the coast, the wine and the warmth of the welcome. Cape Town does not just meet expectations, it quietly exceeds them.",
+    },
 ]
 
 
