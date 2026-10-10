@@ -5,8 +5,8 @@ import Seo from "../components/Seo";
 import VButton from "../components/VButton";
 import NewsletterForm from "../components/NewsletterForm";
 import { usePlanTrip } from "../context/PlanTripContext";
-import api from "../lib/api";
 import { track } from "../lib/analytics";
+import { getArticleBySlug } from "../data/articles";
 import NotFoundPage from "./NotFoundPage";
 
 function fmtDate(s) {
@@ -17,18 +17,15 @@ function fmtDate(s) {
 export default function BlogArticlePage() {
   const { slug } = useParams();
   const { openPlanner } = usePlanTrip();
-  const [article, setArticle] = useState(null);
-  const [status, setStatus] = useState("loading");
+
+  // Local lookup — no network request. Works offline / without the backend.
+  const article = getArticleBySlug(slug);
 
   useEffect(() => {
-    setStatus("loading");
-    api.get(`/blog/${slug}`)
-      .then(({ data }) => { setArticle(data); setStatus("ok"); track("blog_article_view", { slug }); })
-      .catch(() => setStatus("notfound"));
-  }, [slug]);
+    if (article) track("blog_article_view", { slug });
+  }, [slug]); // eslint-disable-line
 
-  if (status === "notfound") return <NotFoundPage />;
-  if (status === "loading" || !article) return <div className="pt-40 pb-40 text-center text-[#767B78]">Loading article...</div>;
+  if (!article) return <NotFoundPage />;
 
   const paragraphs = article.content.split("\n\n");
 

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Clock, ArrowRight } from "lucide-react";
 import Seo from "../components/Seo";
-import api from "../lib/api";
 import { track } from "../lib/analytics";
+import { BLOG_CATEGORIES, getArticlesByCategory } from "../data/articles";
 
-const CATEGORIES = ["All", "Travel Guides", "Destination Inspiration", "Travel Tips", "Budget Travel", "Couples", "Adventure", "City Breaks"];
+const CATEGORIES = BLOG_CATEGORIES;
 
 function fmtDate(s) {
   try { return new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
@@ -13,27 +13,12 @@ function fmtDate(s) {
 }
 
 export default function BlogPage() {
-  const [articles, setArticles] = useState([]);
   const [category, setCategory] = useState("All");
-  const [status, setStatus] = useState("loading"); // loading | ok | error
 
   useEffect(() => { track("page_view", { page: "blog" }); }, []);
 
-  const loadArticles = (cat) => {
-    setStatus("loading");
-    api.get("/blog", { params: cat !== "All" ? { category: cat } : {} })
-      .then(({ data }) => { setArticles(Array.isArray(data) ? data : []); setStatus("ok"); })
-      .catch((err) => {
-        // Diagnostic only — no credentials/tokens/PII logged.
-        console.error("[blog] failed to load articles:", err?.response?.status || err?.code || err?.message);
-        setArticles([]);
-        setStatus("error");
-      });
-  };
-
-  useEffect(() => { loadArticles(category); }, [category]);
-
-  const loading = status === "loading";
+  // Local data — no network request. Blog works even if the backend is offline.
+  const articles = getArticlesByCategory(category);
   const [featured, ...rest] = articles;
 
   return (
@@ -60,21 +45,7 @@ export default function BlogPage() {
           ))}
         </div>
 
-        {loading ? (
-          <div className="text-center py-20" data-testid="blog-loading">
-            <div className="w-10 h-10 rounded-full border-2 border-[#2A4038] border-t-transparent animate-spin mx-auto mb-4" />
-            <p className="text-[#767B78]">Loading articles…</p>
-          </div>
-        ) : status === "error" ? (
-          <div className="text-center py-20 rounded-2xl border border-dashed border-[#C86D51]/40 bg-[#C86D51]/5" data-testid="blog-error">
-            <p className="font-serif text-2xl mb-2 text-[#1C1E1D]">We couldn't load the journal</p>
-            <p className="text-[#767B78] mb-6">Something went wrong reaching our servers. Please try again.</p>
-            <button onClick={() => loadArticles(category)} data-testid="blog-retry-btn"
-              className="text-sm font-semibold px-6 py-3 rounded-full bg-[#2A4038] text-[#FDFBF7] hover:bg-[#1E2F28] transition-colors">
-              Try again
-            </button>
-          </div>
-        ) : articles.length === 0 ? (
+        {articles.length === 0 ? (
           <p className="text-center text-[#767B78] py-20" data-testid="blog-empty">No articles in this category yet.</p>
         ) : (
           <>
