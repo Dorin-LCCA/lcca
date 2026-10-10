@@ -323,7 +323,7 @@ export const SOCIAL_GALLERY = [
 ];
 
 export const TEAM = [
-  { name: "Elena Marsh", role: "Founder & Head of Travel", image: "https://images.unsplash.com/photo-1758691736975-9f7f643d178e?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" },
+  { name: "Dorin Spinu", role: "Founder & Head of Travel", image: "https://customer-assets-m6fa6gv7.emergentagent.net/job_travel-voyara-demo/artifacts/66b987b95bf886e9_IMAGE%202026-10-10%2010%3A36%3A37.jpg" },
   { name: "Marco Bellini", role: "Europe Specialist", image: "https://images.unsplash.com/photo-1758518731468-98e90ffd7430?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" },
 ];
 
